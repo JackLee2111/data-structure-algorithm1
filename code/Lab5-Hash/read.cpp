@@ -308,7 +308,7 @@ int main()
 
     //  utf-8测试入口
 
-    infile.open("./data/test_u1.in", ios::in);
+    infile.open("./data/test_u1.in", ios::in); // test_u1.in    final-data/2-1.in
     outfile.open("./data/test_u1.out", ios::in);
     if (!infile.is_open())
         cout << "Open file failure!" << endl;
@@ -325,8 +325,8 @@ int main()
 
             int i_name = hash_utf8(name);
             // cout << opt << " " << name << " " << num << " " << i_name << endl;
-            //  cout << i_name << endl;
-            //   exist_pos = find(i_name);
+            //   cout << i_name << endl;
+            //    exist_pos = find(i_name);
             insert_model3(i_name, num);
         }
         else if (opt == 1)

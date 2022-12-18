@@ -33,7 +33,7 @@ int line1[MAX_NUM]; // 随机取行
 
 bool cmp(int a, int b)
 {
-    return a < b;
+    return a > b;
 }
 void creat_data_for_poj()
 {
@@ -147,10 +147,9 @@ void creat_data_for_poj()
     outfile1.close();
 }
 
-/*
+int line2[MAX_NUM]; // 随机取行
 void creat_data_for_hdu()
 {
-    int line2[MAX_NUM];                   // 随机取行
     int data_num2 = DATA_NUM;             // 数据组数
     int ask_num2 = ASK_NUM;               // 询问组数
     int ask_not_in_num2 = ASK_NOT_IN_NUM; // 不存在的询问组数
@@ -162,89 +161,93 @@ void creat_data_for_hdu()
         line2[i] = rand() % MOD;
     }
 
-    sort(line2 + 1, line2 + 2 * data_num2 + 1);
-
-
-ifstream infile2;  // 输入流
-ofstream outfile2; // 输出流
-infile2.open(OUTPUT_HDU, ios::in);
-if (!infile2.is_open())
-    cout << "Open in-file failure!" << endl;
-int i2 = 0, i_line2 = 1;
-while (!infile2.eof()) // 若未到文件结束一直循环
-{
-    i2++;
-    int number, rank, pro;
-    string name;
-    infile2 >> number >> name >> rank >> pro;
-
-    if (i_line2 <= data_num2 && line2[i_line2] == i2)
+    sort(line2 + 1, line2 + 3 * data_num2 + 1, cmp);
+    unique(line2 + 1, line2 + 3 * data_num2 + 1);
+    /*
+    for (int i = 1; i <= 2 * data_num1; i++)
     {
-        out_name[i_line2] = name;
-        out_number[i_line2] = i2;
-        i_line2++;
-    }
-    if (i_line2 > data_num2 && line2[i_line2] == i2)
+        cout << line1[i] << endl;
+    }*/
+    ifstream infile2;  // 输入流
+    ofstream outfile2; // 输出流
+    infile2.open(INPUT_HDU, ios::in);
+    if (!infile2.is_open())
+        cout << "Open in-file failure!" << endl;
+    int i2 = 500000, i_line2 = 1;
+    while (!infile2.eof()) // 若未到文件结束一直循环
     {
-        prepare_name[i_line2 - data_num2] = name;
-        i_line2++;
+        i2--;
+        int number, rank, pro;
+        string name;
+        infile2 >> number >> name >> rank >> pro;
+
+        if (i_line2 <= data_num2 && line2[i_line2] == i2)
+        {
+            out_name[i_line2] = name;
+            out_number[i_line2] = i2;
+            i_line2++;
+        }
+        if (i_line2 > data_num2 && i_line2 <= 2 * data_num2 && line2[i_line2] == i2)
+        {
+            prepare_name[i_line2 - data_num2] = name;
+            i_line2++;
+        }
+        if (i_line2 > 2 * data_num2)
+            break;
     }
-    if (i_line2 > 2 * data_num2)
-        break;
+    outfile2.open(OUTPUT_HDU, ios::app);
+    if (!outfile2.is_open())
+        cout << "Open out-file failure!" << endl;
+    // cout << "--------" << endl;
+    for (int i = 1; i <= ask_in_num2; i++)
+    {
+        prepare_name[i] = out_name[i];
+        // cout << out_name[i] << endl;
+    }
+    // cout << "--------" << endl;
+    for (int k = 1, i = 1, j = 1; k <= data_num2 + ask_num2; k++)
+    {
+        if (k < (data_num2 + ask_num2) / 3)
+        {
+            outfile2 << "0 " << out_name[i] << " " << out_number[i] << endl;
+            i++;
+            continue;
+        }
+        if (line2[k] % 2 == 1 && i <= data_num2)
+        {
+            outfile2 << "0 " << out_name[i] << " " << out_number[i] << endl;
+            i++;
+        }
+        else if (line2[k] % 2 == 1 && i > data_num2)
+        {
+            outfile2 << "1 " << prepare_name[j] << endl;
+            j++;
+        }
+        else if (line2[k] % 2 == 0 && j <= ask_num2)
+        {
+            outfile2 << "1 " << prepare_name[j] << endl;
+            j++;
+        }
+        else if (line2[k] % 2 == 0 && j > ask_num2)
+        {
+            outfile2 << "0 " << out_name[i] << " " << out_number[i] << endl;
+            i++;
+        }
+    }
+    outfile2 << "2" << endl;
+    cout << "end2" << endl;
+
+    infile2.close();
+    outfile2.close();
 }
-outfile2.open(OUTPUT_HDU, ios::in);
-if (!outfile2.is_open())
-    cout << "Open out-file failure!" << endl;
-
-for (int i = 1; i <= ask_in_num2; i++)
-{
-    prepare_name[i] = out_name[i];
-}
-
-for (int k = 1, i = 1, j = 1; k <= data_num2 + ask_num2; k++)
-{
-    if (k < (data_num2 + ask_num2) / 3)
-    {
-        outfile2 << "0 " << out_name[i] << " " << out_number[i] << endl;
-        i++;
-        continue;
-    }
-    if (line2[k] % 2 == 1 && i <= data_num2)
-    {
-        outfile2 << "0 " << out_name[i] << " " << out_number[i] << endl;
-        i++;
-    }
-    else if (line2[k] % 2 == 1 && i > data_num2)
-    {
-        outfile2 << "1 " << prepare_name[j] << endl;
-        j++;
-    }
-    else if (line2[k] % 2 == 0 && j <= ask_num2)
-    {
-        outfile2 << "1 " << prepare_name[j] << endl;
-        j++;
-    }
-    else if (line2[k] % 2 == 0 && j > ask_num2)
-    {
-        outfile2 << "0 " << out_name[i] << " " << out_number[i] << endl;
-        i++;
-    }
-}
-outfile2 << "2" << endl;
-cout << "end2" << endl;
-
-infile2.close();
-outfile2.close();
-}
-*/
 
 int main()
 {
     // poj.txt文件操作
-    creat_data_for_poj();
+    // creat_data_for_poj();
 
     // hdu.txt文件操作
-    // creat_data_for_hdu();
+    creat_data_for_hdu();
 
     return 0;
 }

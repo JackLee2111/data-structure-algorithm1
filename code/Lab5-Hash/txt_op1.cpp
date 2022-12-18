@@ -9,11 +9,12 @@ using namespace std;
 #define MAX_NUM 130000
 
 // 输入输出文件
-#define INPUT_POJ "./data/temp2.txt" // ASCII
-#define OUTPUT_POJ "./data/temp3.txt"
+#define INPUT_POJ "./data/final-data/2-1.in" //
+#define OUTPUT_POJ "./data/temp2.txt"
 
 // 数据特征参数
-#define DATA_NUM 300000 // 插入组数
+#define DATA_NUM 50000 // 插入组数
+#define SHIFT 1666
 
 void delete1()
 {
@@ -33,12 +34,12 @@ void delete1()
     while (getline(infile, temp)) // 按行读取字符串
     {
         i++;
-        /*
-        if (i <= DATA_NUM)
-            continue;*/
+
+        if (i <= SHIFT)
+            continue;
         outfile << temp; // 写文件
         outfile << endl;
-        if (i == DATA_NUM)
+        if (i == DATA_NUM + SHIFT)
             break;
     }
 
