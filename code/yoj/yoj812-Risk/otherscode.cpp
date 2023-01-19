@@ -2,47 +2,17 @@
 #include <vector>
 #include <queue>
 #include <iostream>
-#include <algorithm>
 using namespace std;
-// 二分查找
-int binSearch(int *A, int &e, int lo, int hi)
+int binSearch(int *A, int const &e, int lo, int hi)
 {
     while (lo < hi)
-    {
-        int mi = (lo + hi) >> 1;
-        (e < A[mi]) ? hi = mi : lo = mi + 1;
-    }
+    {                                        // 每步迭代仅需做一次比较判断，有两个分支
+        int mi = (lo + hi) >> 1;             // 以中点为轴点
+        (e < A[mi]) ? hi = mi : lo = mi + 1; // 经比较后确定深入[lo, mi)或(mi, hi)
+    }                                        // 成功查找不能提前终止
 
-    return --lo;
-}
-
-void QuickSort(vector<int> &arr, int begin, int end)
-{
-    if (begin > end)
-        return;
-    int tmp = arr[begin];
-    int i = begin;
-    int j = end;
-    while (i != j)
-    {
-        while (arr[j] >= tmp && j > i)
-            j--;
-        while (arr[i] <= tmp && j > i)
-            i++;
-        if (j > i)
-        {
-            int t = arr[i];
-            arr[i] = arr[j];
-            arr[j] = t;
-        }
-    }
-    arr[begin] = arr[i];
-    arr[i] = tmp;
-    QuickSort(arr, begin, i - 1);
-    QuickSort(arr, i + 1, end);
-}
-
-/*
+    return --lo; // 循环结束时，lo为大于e的元素的最小秩，故lo - 1即不大于e的元素的最大秩
+} // 有多个命中元素时，总能保证返回秩最大者；查找失败时，能够返回失败的位置
 
 void merge(vector<int> &data, int lo, int mi, int hi)
 {
@@ -80,7 +50,6 @@ void mergeSort(vector<int> &data, int lo, int hi)
     mergeSort(data, mi, hi);
     merge(data, lo, mi, hi);
 }
-*/
 struct Cnt
 {
     int val;
@@ -140,8 +109,9 @@ vector<int> data;    // 先接收数据
 vector<int> require; // 向前回溯的天数
 vector<int> p;       // 低要求
 vector<int> q;       // 中要求
-int main()
+void receivedata()
 {
+    // cout<<"进入接受数据函数"<<endl;
     cin >> days;
     for (int i = 0; i < days; i++)
     {
@@ -152,6 +122,8 @@ int main()
         if (i != days - 1)
             data.push_back(data1);
     }
+    // cout<<data.size()<<" "<<days<<endl;
+    // cout<<"每天确诊数据已输入"<<endl;
     for (int i = 0; i < days; i++)
     {
         int data2;
@@ -159,6 +131,7 @@ int main()
         require.push_back(data2);
     }
 
+    // cout<<"追溯天数已输入"<<endl;
     cin >> outputtime;
     for (int j = 0; j < outputtime; j++) // 接受每次的p q值
     {
@@ -167,6 +140,11 @@ int main()
         p.push_back(data1);
         q.push_back(data2);
     }
+    // cout<<"数据已全部接受完成"<<endl;
+}
+int main()
+{
+    receivedata();
     for (int i = 0; i < days; i++)
     {
         result.push(data[i]);
@@ -176,12 +154,11 @@ int main()
             result.pop();
         }
 
-        maxcnt.push_back(result.getMax());
+        maxcnt.push_back(result.getMax()); // 经过处理后，maxcnt的前x天最大确诊数已经确定，接下来是用二分归并排序处理 然后用
+                                           // p,q处理结果
     }
-    int len = maxcnt.size();
-    QuickSort(maxcnt, 0, len);
+    mergeSort(maxcnt, 0, maxcnt.size());
     maxcnt[0] = 0;
-
     for (int i = 0; i < p.size(); i++)
     {
         int a1, a2;
@@ -191,7 +168,16 @@ int main()
             a1--;
         while (maxcnt[a2] == q[i])
             a2--;
-        cout << a1 << " " << a2 - a1 << endl;
+        cout << a1 + 1 << " " << a2 - a1 << endl;
     }
     return 0;
 }
+
+// for(int i=0;i<days;i++)
+// cout<<require[i]<<endl;
+// for(int i=0;i<outputtime;i++)
+// cout<<p[i]<<" "<<q[i]<<endl;
+/*for(int i=0;i<days;i++)
+{
+   cout<<maxcnt[i]<<endl;
+}*/
